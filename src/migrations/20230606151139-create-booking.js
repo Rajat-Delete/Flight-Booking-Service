@@ -1,7 +1,7 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
-const { Enums } =require('../utils/common');
-const { BOOKED , CANCELLED , PENDING , INITIATED } = Enums.BOOKING_STATUS;
+const {Enums} = require('../utils/common');
+const {BOOKED , CANCELLED , INITIATED , PENDING} = Enums.BOOKING_STATUS;
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Bookings', {
@@ -11,7 +11,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      flightId: {
+      flightd: {
         type: Sequelize.INTEGER,
         allowNull : false,
       },
@@ -21,18 +21,20 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
-        values : [BOOKED , CANCELLED , PENDING , INITIATED],
-        defaultValue : INITIATED,
         allowNull : false,
+        values: [BOOKED , CANCELLED , INITIATED , PENDING],
+        defaultValue: INITIATED,
+
       },
-      noofSeats:{
-        type: Sequelize.INTEGER, 
-        defaultValue : 1,
-        allowNull: false,
-      },
-      totalCost: {
+      noOfSeats: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 1,
+      }
+      ,
+      totalCost: {
+        type: Sequelize.INTEGER,
+        allowNull : false,
       },
       createdAt: {
         allowNull: false,

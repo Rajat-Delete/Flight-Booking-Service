@@ -1,13 +1,12 @@
-const { statusCodes } =require('http-status-codes');
+const { StatusCodes } = require('http-status-codes');
 
-const { Booking } =require('../models');
-const { CrudRepository } = require('.');
+const { Booking } = require('../models');
+const CrudRepository = require('./crud-repository');
 
-class BookingRepository extends CrudRepository{
-    constructor(){
+class BookingRepository extends CrudRepository {
+    constructor() {
         super(Booking);
     }
-
 }
 
 module.exports = BookingRepository;
