@@ -9,7 +9,7 @@ try {
     const res = await BookingService.createBooking({
         flightId: request.body.flightId,
         userId : request.body.userId,
-        noOfSeats : request.body.noOfSeats,
+        noofSeats : request.body.noOfSeats,
     });
     SuccesResponse.data= res;
     return response
