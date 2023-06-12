@@ -24,7 +24,29 @@ try {
 
 }
 
+async function updatePayment(request,response){
+try {
+    const res = await BookingService.updatePayment({
+        bookingId: request.body.bookingId,
+        userId : request.body.userId,
+        totalCost : request.body.totalCost,
+    });
+    SuccesResponse.data= res;
+    return response
+    .status(StatusCodes.OK)
+    .json(SuccesResponse);
+} catch (error) {
+    ErrorResponse.error = error;
+    return response
+    .status(StatusCodes.INTERNAL_SERVER_ERROR)
+    .json(ErrorResponse);
+}
+
+}
+
+
 
 module.exports = {
-    createBooking
+    createBooking,
+    updatePayment,
 }
