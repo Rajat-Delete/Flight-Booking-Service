@@ -58,7 +58,7 @@ async function updatePayment(data){
         const bookingTime = new Date(booking.createdAt);
         const currentTime = new Date();
         if(currentTime - bookingTime > 300000){
-            const response = await bookingRepository.update(data.bookingId, {status : CANCELLED}, transaction);
+            await cancelBooking(data.bookingId);
             throw new AppError('Explanation : The Booking is Expired', StatusCodes.BAD_REQUEST);
         }
         if(booking.totalCost != data.totalCost){
@@ -70,12 +70,37 @@ async function updatePayment(data){
         //we assume here everything is fine , so we will proceed with updating the status of booking to BOOKED
         const response = await bookingRepository.update(data.bookingId, {status : BOOKED}, transaction);
 
-        transaction.commit();
+        await transaction.commit();
         return response;
     } catch (error) {
-        transaction.rollback();
+        await transaction.rollback();
         throw error;
     }
+}
+
+async function cancelBooking(bookingId){
+    const transaction =  await db.sequelize.transaction();
+    try {
+        const bookingDetails = await bookingRepository.get(bookingId);
+        console.log(bookingDetails);
+
+        //checking if the booking is already cancelled then there is no need to cancel again
+        if(bookingDetails.status == CANCELLED){
+            await transaction.commit();
+            return true;
+        }
+        await axios.patch(`${ServerConfig.FLIGHT_SERVICE_URL}/api/v1/flights/${bookingDetails.flightId}/seats` , {
+            seats : bookingDetails.noofSeats
+        });
+
+        await bookingRepository.update(bookingId, {status : CANCELLED}, transaction);
+        await transaction.commit();        
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+
+
 }
 
 
