@@ -1,6 +1,5 @@
 const express = require('express');
-
-const { ServerConfig } = require('./config');
+const { ServerConfig , Queue } = require('./config');
 const apiRoutes = require('./routes');
 const CRONS = require('./utils/common/cron-jobs');
 const app = express();
@@ -11,9 +10,12 @@ app.use('/bookingService/api' , apiRoutes);
 
 
 
-app.listen(ServerConfig.PORT, () => {
+
+
+app.listen(ServerConfig.PORT, async () => {
     console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
     //calling the cron jobs here
     CRONS();
-
+    await Queue.connectQueue();
+    console.log('Queue is connected in Flights Booking Service');
 });
